@@ -20,21 +20,14 @@ spi.open(0,0)
 spi.max_speed_hz=1000000
 
 spi.bits_per_word=8
-
-dummy = 0xff
-start = 0x47
-sgl = 0x20
-
 ch0 = 0x00
-
-msbf = 0x08
 dbname = "/home/pi/test.db"
 dbtable = "odor"
 
 
 
-def measure(ch):
-    ad = spi.xfer2( [ (start + sgl + ch + msbf), dummy ] )
+def measure():
+    ad = spi.xfer2( [0x68,  0x00 ] )
     val = ((ad[0] & 0x03) << 8) + ad[1]
     return val
 
@@ -49,7 +42,7 @@ try:
         GPIO.output(22,True)
         time.sleep(0.003)
 
-        ch0_val = measure(ch0)
+        ch0_val = measure()
         Val = 1023 - ch0_val
         if max_value < Val:
             max_value = Val
